@@ -22,4 +22,9 @@ public class Hospital {
     @Column(name = "cnpj")
     private String cnpj;
 
+    public Hospital(String name, String phoneNumber, String cnpj) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.cnpj = cnpj;
+    }
 }
