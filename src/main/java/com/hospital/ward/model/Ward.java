@@ -1,25 +1,39 @@
 package com.hospital.ward.model;
 
 import com.hospital.hospital.model.Hospital;
+import com.hospital.room.model.Room;
+import com.hospital.ward.dto.WardRequest;
 import com.hospital.ward.enums.Specialty;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Ward {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "speciality")
+    @Column(name = "specialty")
     @Enumerated(EnumType.STRING)
-    private Specialty speciality;
+    private Specialty specialty;
 
     @ManyToOne
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
+
+    @OneToMany(mappedBy = "ward", cascade = CascadeType.ALL)
+    private List<Room> rooms;
+
+    public Ward(WardRequest specialty, Hospital hospital) {
+        this.specialty = Specialty.valueOf(String.valueOf(specialty));
+        this.hospital = hospital;
+    }
 }

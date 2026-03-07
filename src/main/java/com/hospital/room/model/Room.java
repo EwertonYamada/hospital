@@ -1,13 +1,18 @@
 package com.hospital.room.model;
 
+import com.hospital.bed.model.Bed;
 import com.hospital.ward.model.Ward;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Room {
 
     @Id
@@ -21,4 +26,12 @@ public class Room {
     @JoinColumn(name = "ward_id")
     private Ward ward;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bed_id")
+    private List<Bed> beds;
+
+    public Room(String roomCode, Ward ward) {
+        this.roomCode = roomCode;
+        this.ward = ward;
+    }
 }

@@ -30,4 +30,10 @@ public class HospitalController {
     public ResponseEntity<Hospital> update(@PathVariable Long id, @RequestBody HospitalRequest hospital) {
         return ResponseEntity.ok(this.hospitalService.update(id, hospital));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        this.hospitalService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 }

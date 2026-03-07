@@ -4,24 +4,31 @@ import com.hospital.hospital.dto.HospitalRequest;
 import com.hospital.hospital.model.Hospital;
 import com.hospital.hospital.repository.HospitalRepository;
 import com.hospital.utils.exceptions.AlreadyExistingEntityException;
+import com.hospital.ward.model.Ward;
+import com.hospital.ward.service.WardService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
+    private final WardService wardService;
 
-    public HospitalService(HospitalRepository hospitalRepository) {
+    public HospitalService(HospitalRepository hospitalRepository, WardService wardService) {
         this.hospitalRepository = hospitalRepository;
+        this.wardService = wardService;
     }
 
     @Transactional
     public Hospital create(HospitalRequest hospitalRequest) {
         this.validateExistingHospital(hospitalRequest.cnpj());
-
         Hospital hospital = new Hospital(hospitalRequest.name(), hospitalRequest.phoneNumber(), hospitalRequest.cnpj());
+        List<Ward> wards = this.wardService.buildWards(hospital, hospitalRequest.specialties());
+        hospital.setWards(wards);
         return this.hospitalRepository.save(hospital);
     }
 
@@ -48,5 +55,9 @@ public class HospitalService {
         hospital.setName(hospitalRequest.name());
         hospital.setPhoneNumber(hospitalRequest.phoneNumber());
         return this.hospitalRepository.save(hospital);
+    }
+
+    public void deleteById(Long id) {
+        this.hospitalRepository.deleteById(id);
     }
 }
